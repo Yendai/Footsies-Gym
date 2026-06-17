@@ -357,6 +357,11 @@ class FootsiesEnv(gym.Env):
             else state.p2MoveFrame
         )
 
+        # Observation dictionary structure:
+        #   "guard": (p1Guard, p2Guard) - Guard values for both players (0..3)
+        #   "move": (p1MoveIdx, p2MoveIdx) - Move indices for both players
+        #   "move_frame": (p1MoveFrame, p2MoveFrame) - Current frame in the move for both players
+        #   "position": (p1Position, p2Position) - X positions for both players
         return {
             "guard": (state.p1Guard, state.p2Guard),
             "move": (
