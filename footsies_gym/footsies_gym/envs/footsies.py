@@ -324,7 +324,12 @@ class FootsiesEnv(gym.Env):
         self, action: "tuple[bool, bool, bool]", is_opponent: bool = False
     ):
         """Send an action to the FOOTSIES instance"""
-        action_message = bytearray(action)
+        # Ensure boolean/numpy boolean values are converted to integers
+        try:
+            action_message = bytearray(int(x) for x in action)
+        except TypeError:
+            # Fallback: try converting the action to a list of ints first
+            action_message = bytearray([int(x) for x in list(action)])
         try:
             if is_opponent:
                 self.opponent_comm.sendall(action_message)
