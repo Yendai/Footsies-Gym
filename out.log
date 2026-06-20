@@ -10,13 +10,13 @@ Direct3D:
     VRAM:     3951 MB
     Driver:   31.0.101.5186
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  0.316 seconds
-- Finished resetting the current domain, in  0.003 seconds
+- Loaded All Assemblies, in  9.245 seconds
+- Finished resetting the current domain, in  0.004 seconds
 <RI> Initializing input.
 New input system (experimental) initialized
 Using Windows.Gaming.Input
 <RI> Initialized touch support.
-UnloadTime: 6.318000 ms
+UnloadTime: 8.097600 ms
 Passed arguments: Build/FOOTSIES.exe --mute --training --p1-address localhost --p1-port 11000 --remote-control-address localhost --remote-control-port 11002 -force-gfx-direct --synced-non-blocking --p2-bot -logFile out.log 
    Run as training environment? True
    Fast forward training? False
@@ -38,615 +38,725 @@ Passed arguments: Build/FOOTSIES.exe --mute --training --p1-address localhost --
    Send environment state to P2? True
 [Singleton] Using instance already created: SoundManager
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 6.016700 ms
+UnloadTime: 6.093000 ms
 Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 1642.
-Total: 2.147900 ms (FindLiveObjects: 0.067600 ms CreateObjectMapping: 0.026600 ms MarkObjects: 2.033200 ms  DeleteObjects: 0.020200 ms)
+Total: 3.184700 ms (FindLiveObjects: 0.132300 ms CreateObjectMapping: 0.095800 ms MarkObjects: 2.930600 ms  DeleteObjects: 0.025400 ms)
 
 [Singleton] Using instance already created: GameManager
 Waiting for the agent to connect to address 'localhost' with port 11000...
 Waiting for the agent to connect to address 'localhost' with port 11002...
 Agent connection received!
 Agent connection received!
-AddMidApproach1
-AddNoAttack
-The fight has started!
-AddOneHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
 AddFarApproach2
 AddDelaySpecialAttack
 The fight has started!
 AddFarApproach2
 AddFarApproach2
 AddNoAttack
+AddNoAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 AddMidApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack1
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddNoAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddNoAttack
+The fight has started!
+AddOneHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddTwoHitImmediateAttack
+AddNoAttack
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
+AddNoAttack
+The fight has started!
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNoAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddDelaySpecialAttack
+The fight has started!
+AddFarApproach2
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach2
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddNoAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNoAttack
+AddFallBack2
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
+AddNoAttack
+The fight has started!
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNoAttack
+AddFarApproach2
+AddNoAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddNoAttack
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
+AddDelaySpecialAttack
+AddFallBack2
+AddFallBack2
+AddTwoHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddNoAttack
+The fight has started!
+AddOneHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddNoAttack
+The fight has started!
+AddNoAttack
+AddFallBack2
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack2
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNoAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddDelaySpecialAttack
+The fight has started!
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddNoAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddFallBack2
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
+AddNoAttack
+The fight has started!
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddFarApproach1
+AddNoAttack
+AddNoAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddNoAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddNoAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddNoAttack
+AddNoAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddNoAttack
+AddNoAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddDelaySpecialAttack
+The fight has started!
+AddMidApproach1
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddOneHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddDelaySpecialAttack
+AddMidApproach2
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddOneHitImmediateAttack
+AddFallBack2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddDelaySpecialAttack
+AddFarApproach2
+AddFarApproach1
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 AddDelaySpecialAttack
-AddNeutral
-AddMidApproach1
-AddNeutral
-AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-AddFallBack2
-AddTwoHitImmediateAttack
 Someone got knocked out!
 Fight over!
 AddMidApproach2
-AddNoAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddNoAttack
-The fight has started!
-AddNoAttack
-AddMidApproach2
-AddOneHitImmediateAttack
-AddFallBack1
-Someone got knocked out!
-Fight over!
-AddMidApproach1
 AddOneHitImmediateAttack
 The fight has started!
 AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
 AddTwoHitImmediateAttack
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
 AddTwoHitImmediateAttack
 AddMidApproach1
 AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddNoAttack
-AddNeutral
-AddTwoHitImmediateAttack
-AddNeutral
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddNoAttack
-The fight has started!
-AddOneHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddNoAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddNoAttack
-The fight has started!
-AddNoAttack
-AddFallBack1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddOneHitImmediateAttack
-AddMidApproach2
-AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach2
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddNoAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNoAttack
+AddFarApproach2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddNoAttack
+AddFarApproach1
+AddOneHitImmediateAttack
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 AddFallBack2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
 Someone got knocked out!
 Fight over!
-AddFarApproach1
+AddMidApproach1
 AddNoAttack
 The fight has started!
 AddNoAttack
 AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
 AddOneHitImmediateAttack
+AddFallBack2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddDelaySpecialAttack
+AddFallBack2
 AddFallBack1
 AddTwoHitImmediateAttack
 Someone got knocked out!
 Fight over!
+AddMidApproach2
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
 AddFarApproach1
+AddNoAttack
+AddNoAttack
+AddNoAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack2
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack1
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddFarApproach2
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddNoAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
+AddNoAttack
+The fight has started!
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddNoAttack
+AddFarApproach2
+AddNoAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack2
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
 AddOneHitImmediateAttack
 The fight has started!
 AddNoAttack
 AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddMidApproach2
 AddTwoHitImmediateAttack
 AddFarApproach1
-AddTwoHitImmediateAttack
 AddNoAttack
+AddNoAttack
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
 AddNoAttack
 AddFallBack2
 AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddNoAttack
-The fight has started!
 AddTwoHitImmediateAttack
 Someone got knocked out!
 Fight over!
-AddMidApproach1
+AddFarApproach1
 AddOneHitImmediateAttack
 The fight has started!
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
+AddNoAttack
 AddMidApproach2
 AddTwoHitImmediateAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach2
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddNoAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddNoAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddNoAttack
-The fight has started!
-AddNoAttack
+AddOneHitImmediateAttack
 AddFallBack1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFallBack1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddDelaySpecialAttack
+The fight has started!
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
 AddImmediateSpecialAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
+AddNoAttack
+AddNoAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+Someone got knocked out!
+Fight over!
+AddMidApproach2
+AddNoAttack
+The fight has started!
+AddOneHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
 AddMidApproach2
 AddTwoHitImmediateAttack
 AddFallBack2
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
-AddNeutral
-AddOneHitImmediateAttack
 AddTwoHitImmediateAttack
 AddNeutral
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddNoAttack
-The fight has started!
-AddOneHitImmediateAttack
 AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddNoAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddNeutral
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFallBack2
-AddImmediateSpecialAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach1
-AddNoAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach1
-AddNoAttack
-AddNoAttack
-AddOneHitImmediateAttack
-AddFallBack1
-Someone got knocked out!
-Fight over!
-AddFarApproach1
-AddNoAttack
-The fight has started!
-AddOneHitImmediateAttack
 Someone got knocked out!
 Fight over!
 AddMidApproach2
 AddNoAttack
 The fight has started!
-AddTwoHitImmediateAttack
-AddFallBack1
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
 AddNoAttack
-AddOneHitImmediateAttack
-AddMidApproach2
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach1
-AddNoAttack
-AddImmediateSpecialAttack
-AddMidApproach1
-AddNoAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddNoAttack
-The fight has started!
-AddOneHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddNeutral
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddNoAttack
-AddNoAttack
-AddNoAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
 AddMidApproach1
 AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddNoAttack
-The fight has started!
-AddNoAttack
-AddTwoHitImmediateAttack
-AddMidApproach2
-AddNoAttack
-AddFarApproach1
-AddNoAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddOneHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFallBack1
-AddNoAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
 Someone got knocked out!
 Fight over!
 AddFarApproach2
 AddNoAttack
 The fight has started!
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddOneHitImmediateAttack
-The fight has started!
-AddNoAttack
-AddOneHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddDelaySpecialAttack
-Someone got knocked out!
-Fight over!
-AddFarApproach1
-AddNoAttack
-The fight has started!
-AddImmediateSpecialAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddNoAttack
-AddNoAttack
-AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddFarApproach2
-AddDelaySpecialAttack
-The fight has started!
-AddFarApproach1
-AddNoAttack
-AddNeutral
-AddDelaySpecialAttack
-AddMidApproach1
-Someone got knocked out!
-Fight over!
-AddFarApproach1
-AddNoAttack
-The fight has started!
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddOneHitImmediateAttack
-The fight has started!
-AddNoAttack
-AddTwoHitImmediateAttack
-AddMidApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNeutral
-Someone got knocked out!
-Fight over!
-AddFarApproach2
-AddDelaySpecialAttack
-The fight has started!
-AddFarApproach2
-AddFarApproach1
-AddNoAttack
-AddTwoHitImmediateAttack
-AddOneHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddDelaySpecialAttack
-AddFarApproach2
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddDelaySpecialAttack
-The fight has started!
-AddFarApproach2
-AddNeutral
-AddFarApproach1
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddNeutral
-AddDelaySpecialAttack
-The fight has started!
-AddFarApproach1
-AddFallBack2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddOneHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddNeutral
-AddNoAttack
-The fight has started!
-AddMidApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddDelaySpecialAttack
-AddFarApproach1
-AddFallBack2
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach1
-AddNoAttack
-AddNoAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddNoAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNeutral
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 AddFallBack1
 Someone got knocked out!
 Fight over!
 AddMidApproach2
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddDelaySpecialAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach2
 AddDelaySpecialAttack
 The fight has started!
 AddFarApproach2
-AddMidApproach2
-AddOneHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach1
+AddFarApproach2
 AddNoAttack
-AddOneHitImmediateAttack
 AddTwoHitImmediateAttack
-AddOneHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-AddFarApproach1
+AddMidApproach2
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddOneHitImmediateAttack
-AddNeutral
-Someone got knocked out!
-Fight over!
-AddNeutral
-AddNoAttack
-The fight has started!
-AddNeutral
-AddTwoHitImmediateAttack
+AddMidApproach2
 AddTwoHitImmediateAttack
 AddMidApproach1
 AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach2
-AddTwoHitImmediateAttack
-AddMidApproach2
 AddTwoHitImmediateAttack
 AddNoAttack
 AddFarApproach2
-AddNoAttack
-AddMidApproach2
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddNeutral
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNoAttack
 AddFarApproach1
-AddNoAttack
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFallBack2
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddNoAttack
-The fight has started!
-AddNoAttack
-AddMidApproach1
-AddOneHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach2
 AddTwoHitImmediateAttack
 AddFarApproach2
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
-AddMidApproach1
+AddFallBack1
 AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
-Setting up 6 worker threads for Enlighten.
+AddOneHitImmediateAttack
+AddFallBack1
+Training agent has ceased communication, quitting...
