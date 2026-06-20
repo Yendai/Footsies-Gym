@@ -781,6 +781,7 @@ PlayerSettings:
     Hub: 0
     Purchasing: 0
     UNet: 1
+    Unity Ads: 0
     Unity_Ads: 0
   luminIcon:
     m_Name: 
@@ -804,11 +805,11 @@ PlayerSettings:
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
   enableDirectStorage: 0
-  cloudProjectId: 
+  cloudProjectId: 4bdc7229-c39b-45a0-bf83-ccfd8899da27
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Platformer-2D
-  organizationId: 
+  projectName: FOOTSIES
+  organizationId: tendaiball
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
   hmiLoadingImage: {fileID: 0}
