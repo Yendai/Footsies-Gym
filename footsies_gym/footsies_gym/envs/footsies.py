@@ -167,8 +167,9 @@ class FootsiesEnv(gym.Env):
             }
         )
 
-        # 3 actions, which can be combined: left, right, attack
-        self.action_space = spaces.MultiBinary(3)
+        # 4 actions, which can be combined: left, right, attack, combo_toggle
+        # combo_toggle allows the agent to enter/exit combo stance
+        self.action_space = spaces.MultiBinary(4)
 
         # -1 for losing, 1 for winning, 0 otherwise
         self.reward_range = (-1, 1)
@@ -189,6 +190,12 @@ class FootsiesEnv(gym.Env):
         # Keep track of whether the current episode is finished
         # Necessary when calling reset() when it isn't finished, which will require a hard reset
         self.has_terminated = True
+
+        # Combo stance tracking
+        self.combo_stance_active = False  # Whether agent is currently in combo stance
+        self.combo_queued = False  # Whether a follow-up combo attack is queued
+        self.combo_attack_type = None  # Type of attack to follow up with (N_ATTACK or B_ATTACK)
+        self.last_attack_connected = False  # Whether the last attack hit or was blocked
 
     def _instantiate_game(self):
         """
@@ -321,15 +328,33 @@ class FootsiesEnv(gym.Env):
         return self._current_state
 
     def _send_action(
-        self, action: "tuple[bool, bool, bool]", is_opponent: bool = False
+        self, action: "tuple[bool, bool, bool, bool]" | "tuple[bool, bool, bool]", is_opponent: bool = False
     ):
-        """Send an action to the FOOTSIES instance"""
+        """Send an action to the FOOTSIES instance
+        
+        Action format: (left, right, attack, combo_toggle) for agent
+                      (left, right, attack) for opponent (combo is agent-only)
+        """
+        # Extract the game-relevant actions (left, right, attack)
+        # Handle both old 3-tuple and new 4-tuple formats
+        if len(action) == 4:
+            left, right, attack, combo_toggle = action
+            # Handle combo stance toggle (agent only)
+            if not is_opponent:
+                self.combo_stance_active = bool(combo_toggle)
+        else:
+            left, right, attack = action
+            combo_toggle = False
+        
+        # Only send game-relevant actions to the game
+        game_action = (left, right, attack)
+        
         # Ensure boolean/numpy boolean values are converted to integers
         try:
-            action_message = bytearray(int(x) for x in action)
+            action_message = bytearray(int(x) for x in game_action)
         except TypeError:
             # Fallback: try converting the action to a list of ints first
-            action_message = bytearray([int(x) for x in list(action)])
+            action_message = bytearray([int(x) for x in list(game_action)])
         try:
             if is_opponent:
                 self.opponent_comm.sendall(action_message)
@@ -337,6 +362,53 @@ class FootsiesEnv(gym.Env):
                 self.comm.sendall(action_message)
         except OSError:
             raise FootsiesGameClosedError
+
+    def _check_and_queue_combo(self, previous_state: FootsiesState | None, current_state: FootsiesState):
+        """
+        Check if an attack connected and queue a follow-up if in combo stance.
+        
+        An attack is considered "connected" if it was active or in recovery in the previous frame
+        and is no longer active in the current frame (either in recovery or finished).
+        """
+        if previous_state is None or not self.combo_stance_active:
+            return
+        
+        # Get the previous attack move
+        previous_move_id = previous_state.p1Move
+        current_move_id = current_state.p1Move
+        previous_move_frame = previous_state.p1MoveFrame
+        current_move_frame = current_state.p1MoveFrame
+        
+        # Define attack moves (normal and backward attacks)
+        attack_moves = {
+            FootsiesMove.N_ATTACK.value.id,
+            FootsiesMove.B_ATTACK.value.id,
+            FootsiesMove.N_SPECIAL.value.id,
+            FootsiesMove.B_SPECIAL.value.id,
+        }
+        
+        # Check if the previous state was an attack move that has now finished active frames
+        if previous_move_id in attack_moves:
+            previous_move_enum = None
+            for move in FootsiesMove:
+                if move.value.id == previous_move_id:
+                    previous_move_enum = move
+                    break
+            
+            if previous_move_enum is not None:
+                # Check if attack was in active frames or just finished active frames
+                is_in_active = previous_move_enum.in_active(previous_move_frame)
+                is_now_in_recovery = previous_move_enum.in_recovery(current_move_frame)
+                
+                # If the attack transitioned from active to recovery, it connected
+                if is_in_active and is_now_in_recovery:
+                    # Queue follow-up attack of the same type
+                    if previous_move_id == FootsiesMove.B_ATTACK.value.id:
+                        self.combo_attack_type = FootsiesMove.B_ATTACK.value.id
+                    else:
+                        # N_ATTACK, N_SPECIAL, B_SPECIAL all queue as N_ATTACK
+                        self.combo_attack_type = FootsiesMove.N_ATTACK.value.id
+                    self.combo_queued = True
 
     def _extract_obs(self, state: FootsiesState) -> dict:
         """Extract the relevant observation data from the environment state"""
@@ -502,6 +574,11 @@ class FootsiesEnv(gym.Env):
         
         self.delayed_frame_queue.clear()
         self._cummulative_episode_reward = 0.0
+        
+        # Reset combo state
+        self.combo_stance_active = False
+        self.combo_queued = False
+        self.combo_attack_type = None
 
         first_state = self._receive_and_update_state()
         # Guarantee it's the first environment state
@@ -526,8 +603,23 @@ class FootsiesEnv(gym.Env):
 
     # Step already assumes that the queue of delayed frames is full from reset()
     def step(
-        self, action: "tuple[bool, bool, bool]"
+        self, action: "tuple[bool, bool, bool, bool]" | "tuple[bool, bool, bool]"
     ) -> "tuple[dict, float, bool, bool, dict]":
+        # Handle combo follow-ups: if a combo is queued, override the action to send the follow-up attack
+        if self.combo_queued and self.combo_attack_type is not None:
+            # Override action with follow-up attack
+            left, right, attack = (action[:3] if len(action) > 3 else action)
+            # Keep movement, but replace attack with the queued combo attack input
+            # The combo_attack_type tells us what direction was held during the attack
+            if self.combo_attack_type == FootsiesMove.B_ATTACK.value.id:
+                # Backward attack: hold back and attack
+                action = (left, 1, 1, 0) if len(action) > 3 else (left, 1, 1)
+            else:
+                # Neutral attack: just attack
+                action = (left, right, 1, 0) if len(action) > 3 else (left, right, 1)
+            self.combo_queued = False
+            self.combo_attack_type = None
+        
         # Send action
         if not self.by_example:
             self._send_action(action, is_opponent=False)
@@ -541,6 +633,10 @@ class FootsiesEnv(gym.Env):
 
         # Store the most recent state first and then take the oldest one
         most_recent_state = self._receive_and_update_state()
+        
+        # Detect if an attack connected and queue follow-up if in combo stance
+        self._check_and_queue_combo(previous_state, most_recent_state)
+        
         self.delayed_frame_queue.append(most_recent_state)
         state = self.delayed_frame_queue.popleft()
 

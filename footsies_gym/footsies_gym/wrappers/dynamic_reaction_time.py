@@ -5,32 +5,47 @@ from ..envs.footsies import FootsiesEnv
 
 class DynamicReactionTimeWrapper(gym.Wrapper):
     """
-    Wrapper that dynamically adjusts frame delay based on agent actions.
+    Wrapper that dynamically adjusts frame delay based on agent actions and combo stance.
     
     Simulates human-like reaction time variation where standing still and focusing
     can slightly decrease average reaction time, while active actions increase it.
+    In combo stance, reaction time is overall better (lower delay), but the tradeoff comes
+    from the game mechanics (e.g., specials being minus on block) rather than increased delay.
     
     Parameters
     ----------
     env : gym.Env
-        The FOOTSIES environment to wrap. Should have a `delayed_frame_queue` attribute.
+        The FOOTSIES environment to wrap. Should have a `delayed_frame_queue` attribute and combo tracking.
     base_delay : int
-        The base frame delay when the agent is performing actions. Default: 5
+        The base frame delay when the agent is performing actions in normal stance. Default: 5
+    combo_base_delay : int
+        The base frame delay in combo stance (should be lower for faster reaction). Default: 2
     min_delay : int
         Minimum possible frame delay. Default: 0
     max_delay : int
         Maximum possible frame delay. Default: 10
     delay_reduction_rate : float
-        How much to reduce delay per frame while standing still. Default: 0.1
+        How much to reduce delay per frame while standing still in normal stance. Default: 0.1
     """
 
-    def __init__(self, env, base_delay=5, min_delay=0, max_delay=10, delay_reduction_rate=0.1):
+    def __init__(
+        self, 
+        env, 
+        base_delay=5, 
+        combo_base_delay=2,
+        min_delay=0, 
+        max_delay=10, 
+        delay_reduction_rate=0.1,
+    ):
         super().__init__(env)
         
         if not hasattr(env, 'delayed_frame_queue'):
             raise ValueError("DynamicReactionTimeWrapper requires an environment with a 'delayed_frame_queue' attribute")
+        if not hasattr(env, 'combo_stance_active'):
+            raise ValueError("DynamicReactionTimeWrapper requires an environment with combo stance tracking")
         
         self.base_delay = base_delay
+        self.combo_base_delay = combo_base_delay
         self.min_delay = min_delay
         self.max_delay = max_delay
         self.delay_reduction_rate = delay_reduction_rate
@@ -40,27 +55,61 @@ class DynamicReactionTimeWrapper(gym.Wrapper):
 
     def step(self, action):
         """
-        Step the environment, adjusting frame delay based on the action taken.
+        Step the environment, adjusting frame delay based on the action taken and combo stance.
         
-        If the agent takes no action (standing still), the frame delay gradually decreases.
-        If the agent takes any action, the delay resets to base_delay.
+        Normal stance:
+        - Standing still: delay gradually decreases (faster reaction)
+        - Any action: delay resets to base_delay
+        
+        Combo stance:
+        - Uses combo_base_delay as the baseline (generally faster)
+        - Standing still: further reduces delay
+        - Movement: maintains the combo_base_delay (no additional penalty)
+        - The counterplay comes from game mechanics (e.g., minus on block) rather than artificial delay
         """
-        # action is tuple (left, right, attack)
-        left, right, attack = action
-        
-        # If standing still (no movement, no attack)
-        if left == 0 and right == 0 and attack == 0:
-            self.frames_standing += 1
-            # Reduce delay over time (faster reaction)
-            self.current_delay = max(
-                self.min_delay,
-                self.base_delay - (self.frames_standing * self.delay_reduction_rate)
-            )
+        # Extract movement information from action
+        # Action is now (left, right, attack, combo_toggle) or handled by discretizer as int
+        if isinstance(action, int):
+            # Discrete action format from discretizer
+            left = (action & 1) != 0
+            right = (action & 2) != 0
+            attack = (action & 4) != 0
+            combo_toggle = (action & 8) != 0
         else:
-            # Reset standing counter on any action
-            self.frames_standing = 0
-            # Reset delay back to base when acting
-            self.current_delay = self.base_delay
+            left, right, attack = action[:3]
+            combo_toggle = action[3] if len(action) > 3 else False
+        
+        in_combo = self.env.combo_stance_active
+        is_moving = (left or right)
+        
+        if in_combo:
+            # Combo stance: use lower base delay with no movement penalty
+            effective_base = self.combo_base_delay
+            
+            if not is_moving and not attack:
+                # Standing still in combo stance: further reduce delay
+                self.frames_standing += 1
+                self.current_delay = max(
+                    self.min_delay,
+                    effective_base - (self.frames_standing * self.delay_reduction_rate)
+                )
+            else:
+                # Moving or attacking in combo stance: use base delay (no penalty)
+                self.frames_standing = 0
+                self.current_delay = effective_base
+        else:
+            # Normal stance: original behavior
+            if left == 0 and right == 0 and attack == 0:
+                # Standing still
+                self.frames_standing += 1
+                self.current_delay = max(
+                    self.min_delay,
+                    self.base_delay - (self.frames_standing * self.delay_reduction_rate)
+                )
+            else:
+                # Any action
+                self.frames_standing = 0
+                self.current_delay = self.base_delay
         
         # Update the frame delay in the underlying environment
         self._update_frame_delay(int(self.current_delay))
