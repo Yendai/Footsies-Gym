@@ -2,3 +2,4 @@ from .action_comb_disc import FootsiesActionCombinationsDiscretized
 from .normalization import FootsiesNormalized
 from .statistics import FootsiesStatistics
 from .frame_skip import FootsiesFrameSkipped
+from .dynamic_reaction_time import DynamicReactionTimeWrapper
