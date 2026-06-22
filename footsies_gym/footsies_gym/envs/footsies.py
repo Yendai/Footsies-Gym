@@ -723,16 +723,23 @@ class FootsiesEnv(gym.Env):
     
     @staticmethod
     def find_ports(start: int, step: int = 1, stop: Union[int, None] = None) -> Dict[str, int]:
-        """Find available ports for a new instance of `FootsiesEnv`. The `psutil` module is required."""
-        import psutil
+        """Find available ports for a new instance of `FootsiesEnv` using bind checks only."""
         from itertools import count
-    
-        closed_ports = {p.laddr.port for p in psutil.net_connections(kind="tcp4")}
+
+        def is_port_available(port: int) -> bool:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sckt:
+                sckt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                try:
+                    sckt.bind(("127.0.0.1", port))
+                except OSError:
+                    return False
+            return True
+
         port_iterator = count(start=start, step=step) if stop is None else range(start, stop, step)
         ports = []
 
         for port in port_iterator:
-            if port not in closed_ports:
+            if is_port_available(port):
                 ports.append(port)
 
             if len(ports) >= 3:
