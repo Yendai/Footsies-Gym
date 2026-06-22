@@ -1,13 +1,15 @@
+# pyright: reportMissingImports=false
 import argparse
 import csv
 import json
+import math
 import os
 import sys
 from pathlib import Path
+import numpy as np
 import gymnasium as gym
 import torch
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.monitor import Monitor
 
@@ -50,53 +52,94 @@ def resolve_repo_path(path_like: str) -> str:
     return str(path if path.is_absolute() else (REPO_ROOT / path).resolve())
 
 
-class PolicyEntropyCSVCallback(BaseCallback):
-    """Logs policy entropy H(s) = -sum_a pi(a|s) log pi(a|s) to CSV at each training step."""
-
+class EntropyCSVLogger:
     def __init__(self, csv_path: str, verbose: int = 0):
-        super().__init__(verbose=verbose)
         self.csv_path = csv_path
+        self.verbose = verbose
         self._file_handle = None
         self._writer = None
+        self._update_counter = 0
 
-    def _on_training_start(self) -> None:
+    def open(self) -> None:
         csv_dir = os.path.dirname(self.csv_path)
         if csv_dir:
             os.makedirs(csv_dir, exist_ok=True)
 
         self._file_handle = open(self.csv_path, "w", newline="", encoding="utf-8")
         self._writer = csv.writer(self._file_handle)
-        self._writer.writerow(["timesteps", "env_index", "entropy"])
-
-    def _on_step(self) -> bool:
-        if self._writer is None:
-            return True
-
-        obs = self.locals.get("new_obs")
-        if obs is None:
-            return True
-
-        with torch.no_grad():
-            obs_tensor, _ = self.model.policy.obs_to_tensor(obs)
-            distribution = self.model.policy.get_distribution(obs_tensor)
-            entropy = distribution.distribution.entropy()
-
-            if entropy.dim() > 1:
-                entropy = entropy.sum(dim=-1)
-
-            entropy_values = entropy.detach().cpu().numpy().tolist()
-
-        for env_idx, entropy_value in enumerate(entropy_values):
-            self._writer.writerow([self.num_timesteps, env_idx, float(entropy_value)])
-
+        self._writer.writerow([
+            "timesteps",
+            "update_count",
+            "mean_entropy",
+            "std_entropy",
+            "min_entropy",
+            "max_entropy",
+            "sample_count",
+        ])
         self._file_handle.flush()
-        return True
+        self._update_counter = 0
 
-    def _on_training_end(self) -> None:
+    def close(self) -> None:
         if self._file_handle is not None:
             self._file_handle.close()
             self._file_handle = None
             self._writer = None
+
+    @staticmethod
+    def _flatten_rollout_observations(observations):
+        if isinstance(observations, dict):
+            return {
+                key: value.reshape((-1,) + value.shape[2:]) if value.ndim >= 3 else value
+                for key, value in observations.items()
+            }
+
+        return observations.reshape((-1,) + observations.shape[2:]) if observations.ndim >= 3 else observations
+
+    def log_update(self, timesteps: int, policy, observations) -> None:
+        if self._writer is None:
+            return
+
+        flattened_observations = self._flatten_rollout_observations(observations)
+
+        with torch.no_grad():
+            obs_tensor, _ = policy.obs_to_tensor(flattened_observations)
+            distribution = policy.get_distribution(obs_tensor)
+            entropy = distribution.distribution.entropy()
+
+            if entropy.dim() > 1:
+                entropy = entropy.view(-1)
+
+            entropy_values = entropy.detach().cpu().numpy()
+
+        self._update_counter += 1
+        self._writer.writerow([
+            timesteps,
+            self._update_counter,
+            float(np.mean(entropy_values)),
+            float(np.std(entropy_values)),
+            float(np.min(entropy_values)),
+            float(np.max(entropy_values)),
+            int(entropy_values.size),
+        ])
+        self._file_handle.flush()
+
+
+class EntropyTrackingPPO(PPO):
+    def __init__(self, *args, entropy_csv_path: str, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._entropy_logger = EntropyCSVLogger(entropy_csv_path, verbose=self.verbose)
+
+    def learn(self, *args, **kwargs):
+        self._entropy_logger.open()
+        try:
+            return super().learn(*args, **kwargs)
+        finally:
+            self._entropy_logger.close()
+
+    def train(self) -> None:
+        super().train()
+        if hasattr(self, "rollout_buffer"):
+            self._entropy_logger.log_update(self.num_timesteps, self.policy, self.rollout_buffer.observations)
 
 
 def find_statistics_wrapper(env) -> FootsiesStatistics:
@@ -212,8 +255,56 @@ def parse_args():
     parser.add_argument("--tensorboard-log", default=None, help="Tensorboard log dir")
     parser.add_argument("--stats-text-path", default="Agents-Test/latest_training_stats.txt", help="Path to write the human-readable training statistics report")
     parser.add_argument("--stats-json-path", default="Agents-Test/latest_training_stats.json", help="Path to write the JSON training statistics report")
-    parser.add_argument("--entropy-csv-path", default="Agents-Test/policy_entropy.csv", help="Path to write per-timestep policy entropy CSV")
+    parser.add_argument("--entropy-csv-path", default="Agents-Test/policy_entropy.csv", help="Path to write per-update policy entropy CSV")
     return parser.parse_args()
+
+
+def validate_entropy_tracking(csv_path: str) -> dict:
+    """Validates entropy tracking CSV for signs of proper policy learning.
+    
+    Returns a dict with diagnostic information and validation checks.
+    """
+    try:
+        with open(csv_path, "r", encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+    except FileNotFoundError:
+        return {"error": f"CSV file not found: {csv_path}"}
+    
+    if not rows:
+        return {"error": "CSV file is empty"}
+    
+    required_columns = ["timesteps", "update_count", "mean_entropy", "std_entropy", "min_entropy", "max_entropy"]
+    missing_columns = [column for column in required_columns if column not in rows[0]]
+    if missing_columns:
+        return {"error": f"CSV missing columns: {', '.join(missing_columns)}"}
+
+    try:
+        timesteps = [int(row["timesteps"]) for row in rows]
+        mean_entropy = [float(row["mean_entropy"]) for row in rows]
+        std_entropy = [float(row["std_entropy"]) for row in rows]
+    except (KeyError, TypeError, ValueError) as exc:
+        return {"error": f"CSV format error: {exc}"}
+
+    max_entropy = math.log(16)  # Maximum entropy for Discrete(16)
+    
+    diagnostics = {
+        "total_updates": len(rows),
+        "timesteps_range": (min(timesteps), max(timesteps)),
+        "mean_entropy": {
+            "min": min(mean_entropy),
+            "max": max(mean_entropy),
+            "mean": sum(mean_entropy) / len(mean_entropy),
+            "final": mean_entropy[-1],
+        },
+        "theoretical_max": float(max_entropy),
+        "checks": {
+            "entropy_decreasing": bool(mean_entropy[-1] < mean_entropy[0]),
+            "entropy_away_from_max": bool(mean_entropy[-1] < max_entropy * 0.95),
+            "significant_change": bool(abs(mean_entropy[-1] - mean_entropy[0]) > 0.1),
+        }
+    }
+    
+    return diagnostics
 
 
 if __name__ == "__main__":
@@ -246,11 +337,16 @@ if __name__ == "__main__":
 
     env = DummyVecEnv(env_fns)
 
-    model = PPO("MultiInputPolicy", env, verbose=args.verbose, tensorboard_log=args.tensorboard_log)
-    entropy_callback = PolicyEntropyCSVCallback(csv_path=args.entropy_csv_path)
+    model = EntropyTrackingPPO(
+        "MultiInputPolicy",
+        env,
+        verbose=args.verbose,
+        tensorboard_log=args.tensorboard_log,
+        entropy_csv_path=args.entropy_csv_path,
+    )
 
     try:
-        model.learn(total_timesteps=args.timesteps, callback=entropy_callback)
+        model.learn(total_timesteps=args.timesteps)
     except KeyboardInterrupt:
         print("Training interrupted by user — saving model before exit...")
     finally:

@@ -1,22 +1,22 @@
 Training statistics
- Episodes: 10
+ Episodes: 8
  Results
-  Wins: 3
-  Winrate: 0.300
+  Wins: 6
+  Winrate: 0.750
  Special moves
-  Average: 0.5
-  Total: 5
+  Average: 0.875
+  Total: 7
  Special moves from neutral
   Average: 0.0
   Total: 0
  Combo stance
-  Steps average: 94.5
-  Steps total: 945
-  Toggles average: 44.7
-  Toggles total: 447
+  Steps average: 122.5
+  Steps total: 980
+  Toggles average: 59.875
+  Toggles total: 479
  Combo armed
-  Steps average: 149.4
-  Steps total: 1494
+  Steps average: 189.375
+  Steps total: 1515
  Combo follow-ups queued
-  Average: 6.4
-  Total: 64
+  Average: 7.875
+  Total: 63
