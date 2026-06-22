@@ -156,6 +156,7 @@ class FootsiesEnv(gym.Env):
         # The observation space is divided into 2 columns, the first for player 1 (the agent) and the second for player 2
         self.observation_space = spaces.Dict(
             {
+                "combo": spaces.MultiBinary(2),
                 "guard": spaces.MultiDiscrete([4, 4]),  # 0..3
                 "move": spaces.MultiDiscrete(
                     [len(relevant_moves), len(relevant_moves)]
@@ -192,10 +193,11 @@ class FootsiesEnv(gym.Env):
         self.has_terminated = True
 
         # Combo stance tracking
-        self.combo_stance_active = False  # Whether agent is currently in combo stance
+        self.combo_stance_active = False  # Persistent combo stance mode
+        self.combo_armed = False  # Whether the current attack sequence is committed to combo follow-up
         self.combo_queued = False  # Whether a follow-up combo attack is queued
         self.combo_attack_type = None  # Type of attack to follow up with (N_ATTACK or B_ATTACK)
-        self.last_attack_connected = False  # Whether the last attack hit or was blocked
+        self._combo_toggle_was_pressed = False
 
     def _instantiate_game(self):
         """
@@ -328,7 +330,7 @@ class FootsiesEnv(gym.Env):
         return self._current_state
 
     def _send_action(
-        self, action: "tuple[bool, bool, bool, bool]" | "tuple[bool, bool, bool]", is_opponent: bool = False
+        self, action: tuple[bool, bool, bool, bool] | tuple[bool, bool, bool], is_opponent: bool = False
     ):
         """Send an action to the FOOTSIES instance
         
@@ -339,12 +341,17 @@ class FootsiesEnv(gym.Env):
         # Handle both old 3-tuple and new 4-tuple formats
         if len(action) == 4:
             left, right, attack, combo_toggle = action
-            # Handle combo stance toggle (agent only)
             if not is_opponent:
-                self.combo_stance_active = bool(combo_toggle)
+                if combo_toggle and not self._combo_toggle_was_pressed:
+                    self.combo_stance_active = not self.combo_stance_active
+                self._combo_toggle_was_pressed = bool(combo_toggle)
         else:
             left, right, attack = action
-            combo_toggle = False
+            if not is_opponent:
+                self._combo_toggle_was_pressed = False
+
+        if not is_opponent and self.combo_stance_active and attack and not self.combo_armed:
+            self.combo_armed = True
         
         # Only send game-relevant actions to the game
         game_action = (left, right, attack)
@@ -370,7 +377,7 @@ class FootsiesEnv(gym.Env):
         An attack is considered "connected" if it was active or in recovery in the previous frame
         and is no longer active in the current frame (either in recovery or finished).
         """
-        if previous_state is None or not self.combo_stance_active:
+        if previous_state is None or not self.combo_armed:
             return
         
         # Get the previous attack move
@@ -410,6 +417,21 @@ class FootsiesEnv(gym.Env):
                         self.combo_attack_type = FootsiesMove.N_ATTACK.value.id
                     self.combo_queued = True
 
+    def _sync_combo_armed_state(self, state: FootsiesState):
+        """Keep the combo timing advantage scoped to an active committed attack sequence."""
+        attack_moves = {
+            FootsiesMove.N_ATTACK.value.id,
+            FootsiesMove.B_ATTACK.value.id,
+            FootsiesMove.N_SPECIAL.value.id,
+            FootsiesMove.B_SPECIAL.value.id,
+        }
+
+        if self.combo_queued:
+            self.combo_armed = True
+            return
+
+        self.combo_armed = state.p1Move in attack_moves
+
     def _extract_obs(self, state: FootsiesState) -> dict:
         """Extract the relevant observation data from the environment state"""
         # Simplify the number of frames since the start of the move for moves that last indefinitely
@@ -435,11 +457,13 @@ class FootsiesEnv(gym.Env):
         )
 
         # Observation dictionary structure:
+        #   "combo": (combo_stance_active, combo_armed) - Agent-only combo mode state
         #   "guard": (p1Guard, p2Guard) - Guard values for both players (0..3)
         #   "move": (p1MoveIdx, p2MoveIdx) - Move indices for both players
         #   "move_frame": (p1MoveFrame, p2MoveFrame) - Current frame in the move for both players
         #   "position": (p1Position, p2Position) - X positions for both players
         return {
+            "combo": (int(self.combo_stance_active), int(self.combo_armed)),
             "guard": (state.p1Guard, state.p2Guard),
             "move": (
                 FOOTSIES_MOVE_ID_TO_INDEX[state.p1Move],
@@ -577,8 +601,10 @@ class FootsiesEnv(gym.Env):
         
         # Reset combo state
         self.combo_stance_active = False
+        self.combo_armed = False
         self.combo_queued = False
         self.combo_attack_type = None
+        self._combo_toggle_was_pressed = False
 
         first_state = self._receive_and_update_state()
         # Guarantee it's the first environment state
@@ -603,7 +629,7 @@ class FootsiesEnv(gym.Env):
 
     # Step already assumes that the queue of delayed frames is full from reset()
     def step(
-        self, action: "tuple[bool, bool, bool, bool]" | "tuple[bool, bool, bool]"
+        self, action: tuple[bool, bool, bool, bool] | tuple[bool, bool, bool]
     ) -> "tuple[dict, float, bool, bool, dict]":
         # Handle combo follow-ups: if a combo is queued, override the action to send the follow-up attack
         if self.combo_queued and self.combo_attack_type is not None:
@@ -619,6 +645,7 @@ class FootsiesEnv(gym.Env):
                 action = (left, right, 1, 0) if len(action) > 3 else (left, right, 1)
             self.combo_queued = False
             self.combo_attack_type = None
+            self.combo_armed = True
         
         # Send action
         if not self.by_example:
@@ -636,6 +663,7 @@ class FootsiesEnv(gym.Env):
         
         # Detect if an attack connected and queue follow-up if in combo stance
         self._check_and_queue_combo(previous_state, most_recent_state)
+        self._sync_combo_armed_state(most_recent_state)
         
         self.delayed_frame_queue.append(most_recent_state)
         state = self.delayed_frame_queue.popleft()

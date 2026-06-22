@@ -21,6 +21,7 @@ class FootsiesFrameSkipped(gym.Wrapper):
         move_frame_high = wrapped_observation_space["move_frame"].high[1]
         self.observation_space = spaces.Dict(
             {
+                "combo": wrapped_observation_space["combo"],
                 "guard": wrapped_observation_space["guard"],
                 "move": wrapped_observation_space["move"],
                 "move_frame": spaces.Box(
@@ -37,6 +38,7 @@ class FootsiesFrameSkipped(gym.Wrapper):
     def _frame_skip_obs(self, state_dict: dict) -> dict:
         """From the extracted observation data, transform it in case we are using frame skipping"""
         return {
+            "combo": state_dict["combo"],
             "guard": state_dict["guard"],
             "move": state_dict["move"],
             "move_frame": state_dict["move_frame"][1],

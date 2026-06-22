@@ -14,7 +14,7 @@ Direct3D:
     VRAM:     3951 MB
     Driver:   31.0.101.5186
 Begin MonoManager ReloadAssembly
-- Finished resetting the current domain, in  0.103 seconds
+- Finished resetting the current domain, in  0.065 seconds
 [Physics::Module] Selected backend.
 [Physics::Module] Name: PhysX
 [Physics::Module] Id: 0xf2b8ea05
@@ -23,10 +23,10 @@ Begin MonoManager ReloadAssembly
 [Physics::Module] Threading Mode: Multi-Threaded
 <RI> Initializing input.
 Using Windows.Gaming.Input
-UnloadTime: 7.628000 ms
-Passed arguments: Build/FOOTSIES.exe --mute --training --p1-address localhost --p1-port 11000 --remote-control-address localhost --remote-control-port 11002 -force-gfx-direct --fast-forward --fast-forward-speed 6.0 --synced-non-blocking --p2-bot -logFile out.log 
+UnloadTime: 3.890200 ms
+Passed arguments: Build/FOOTSIES.exe --mute --training --p1-address localhost --p1-port 11000 --remote-control-address localhost --remote-control-port 11002 -force-gfx-direct --synced-non-blocking --p2-bot -logFile out.log 
    Run as training environment? True
-   Fast forward training? True
+   Fast forward training? False
    Sync mode? synced non-blocking
    Mute? True
    Remote Control address: localhost
@@ -45,140 +45,157 @@ Passed arguments: Build/FOOTSIES.exe --mute --training --p1-address localhost --
    Send environment state to P2? True
 [Singleton] Using instance already created: SoundManager
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 6.431800 ms
+UnloadTime: 3.894900 ms
 Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 1899.
-Total: 2.338700 ms (FindLiveObjects: 0.158000 ms CreateObjectMapping: 0.246700 ms MarkObjects: 1.914000 ms  DeleteObjects: 0.019300 ms)
+Total: 1.325200 ms (FindLiveObjects: 0.059600 ms CreateObjectMapping: 0.141300 ms MarkObjects: 1.113400 ms  DeleteObjects: 0.010600 ms)
 
 [Singleton] Using instance already created: GameManager
 Waiting for the agent to connect to address 'localhost' with port 11000...
 Waiting for the agent to connect to address 'localhost' with port 11002...
 Agent connection received!
 Agent connection received!
+AddNeutral
+AddDelaySpecialAttack
+The fight has started!
+AddFarApproach2
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
 AddMidApproach2
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddOneHitImmediateAttack
+AddNeutral
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddNoAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddDelaySpecialAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddNoAttack
+The fight has started!
+AddOneHitImmediateAttack
+AddTwoHitImmediateAttack
+AddNeutral
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach1
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddDelaySpecialAttack
+The fight has started!
+AddFarApproach2
+AddNoAttack
+AddMidApproach2
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddDelaySpecialAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddMidApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddFarApproach2
+AddNoAttack
+AddNoAttack
+AddFarApproach2
+AddNoAttack
+AddFarApproach1
+AddNoAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddNoAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach1
+AddDelaySpecialAttack
+The fight has started!
+AddMidApproach1
+AddNoAttack
+Someone got knocked out!
+Fight over!
+AddFarApproach2
+AddOneHitImmediateAttack
+The fight has started!
+AddNoAttack
+AddNoAttack
+AddFarApproach1
+AddTwoHitImmediateAttack
+AddImmediateSpecialAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
+AddNoAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddNeutral
 AddDelaySpecialAttack
 The fight has started!
 AddFarApproach2
 AddMidApproach2
-AddDelaySpecialAttack
-AddNeutral
-AddFallBack1
-AddNeutral
-AddTwoHitImmediateAttack
-AddFallBack1
-AddTwoHitImmediateAttack
+Someone got knocked out!
+Fight over!
+AddMidApproach1
 AddOneHitImmediateAttack
+The fight has started!
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
+AddTwoHitImmediateAttack
 AddFallBack2
 AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddNeutral
-AddNoAttack
-The fight has started!
-AddMidApproach2
 AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach1
-AddOneHitImmediateAttack
-AddOneHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFallBack2
-AddOneHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach2
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach1
-AddNoAttack
-AddNoAttack
-AddNoAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach2
-AddTwoHitImmediateAttack
-AddMidApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-AddNeutral
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-AddOneHitImmediateAttack
-AddDelaySpecialAttack
-AddMidApproach2
-AddFallBack1
 AddFallBack1
 AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddMidApproach1
-AddOneHitImmediateAttack
-The fight has started!
-AddTwoHitImmediateAttack
-AddNoAttack
-AddFarApproach2
-AddNoAttack
-AddTwoHitImmediateAttack
-AddMidApproach1
-AddTwoHitImmediateAttack
-AddTwoHitImmediateAttack
-Someone got knocked out!
-Fight over!
-AddFarApproach1
-AddNoAttack
-The fight has started!
-AddTwoHitImmediateAttack
 AddTwoHitImmediateAttack
 Someone got knocked out!
 Fight over!
 AddMidApproach2
-AddOneHitImmediateAttack
+AddNoAttack
 The fight has started!
-AddTwoHitImmediateAttack
-AddFarApproach2
-AddNoAttack
-AddNoAttack
-AddFarApproach1
-AddNoAttack
-AddNoAttack
-AddNoAttack
-AddFarApproach1
 Training agent has ceased communication, quitting...

@@ -41,8 +41,8 @@ class DynamicReactionTimeWrapper(gym.Wrapper):
         
         if not hasattr(env, 'delayed_frame_queue'):
             raise ValueError("DynamicReactionTimeWrapper requires an environment with a 'delayed_frame_queue' attribute")
-        if not hasattr(env, 'combo_stance_active'):
-            raise ValueError("DynamicReactionTimeWrapper requires an environment with combo stance tracking")
+        if not hasattr(env, 'combo_stance_active') or not hasattr(env, 'combo_armed'):
+            raise ValueError("DynamicReactionTimeWrapper requires combo stance and arming state tracking")
         
         self.base_delay = base_delay
         self.combo_base_delay = combo_base_delay
@@ -79,35 +79,29 @@ class DynamicReactionTimeWrapper(gym.Wrapper):
             left, right, attack = action[:3]
             combo_toggle = action[3] if len(action) > 3 else False
         
-        in_combo = self.env.combo_stance_active
+        combo_window_active = self.env.combo_armed or (self.env.combo_stance_active and attack)
         is_moving = (left or right)
         
-        if in_combo:
-            # Combo stance: use lower base delay with no movement penalty
+        if combo_window_active:
             effective_base = self.combo_base_delay
             
             if not is_moving and not attack:
-                # Standing still in combo stance: further reduce delay
                 self.frames_standing += 1
                 self.current_delay = max(
                     self.min_delay,
                     effective_base - (self.frames_standing * self.delay_reduction_rate)
                 )
             else:
-                # Moving or attacking in combo stance: use base delay (no penalty)
                 self.frames_standing = 0
                 self.current_delay = effective_base
         else:
-            # Normal stance: original behavior
             if left == 0 and right == 0 and attack == 0:
-                # Standing still
                 self.frames_standing += 1
                 self.current_delay = max(
                     self.min_delay,
                     self.base_delay - (self.frames_standing * self.delay_reduction_rate)
                 )
             else:
-                # Any action
                 self.frames_standing = 0
                 self.current_delay = self.base_delay
         
