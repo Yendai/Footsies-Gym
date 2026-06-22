@@ -10,6 +10,7 @@ import numpy as np
 import gymnasium as gym
 import torch
 from stable_baselines3 import PPO
+from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.monitor import Monitor
 
@@ -58,7 +59,6 @@ class EntropyCSVLogger:
         self.verbose = verbose
         self._file_handle = None
         self._writer = None
-        self._update_counter = 0
 
     def open(self) -> None:
         csv_dir = os.path.dirname(self.csv_path)
@@ -67,17 +67,8 @@ class EntropyCSVLogger:
 
         self._file_handle = open(self.csv_path, "w", newline="", encoding="utf-8")
         self._writer = csv.writer(self._file_handle)
-        self._writer.writerow([
-            "timesteps",
-            "update_count",
-            "mean_entropy",
-            "std_entropy",
-            "min_entropy",
-            "max_entropy",
-            "sample_count",
-        ])
+        self._writer.writerow(["timesteps", "env_index", "entropy"])
         self._file_handle.flush()
-        self._update_counter = 0
 
     def close(self) -> None:
         if self._file_handle is not None:
@@ -85,61 +76,45 @@ class EntropyCSVLogger:
             self._file_handle = None
             self._writer = None
 
-    @staticmethod
-    def _flatten_rollout_observations(observations):
-        if isinstance(observations, dict):
-            return {
-                key: value.reshape((-1,) + value.shape[2:]) if value.ndim >= 3 else value
-                for key, value in observations.items()
-            }
-
-        return observations.reshape((-1,) + observations.shape[2:]) if observations.ndim >= 3 else observations
-
-    def log_update(self, timesteps: int, policy, observations) -> None:
+    def log_step(self, timesteps: int, policy, observations) -> None:
         if self._writer is None:
             return
 
-        flattened_observations = self._flatten_rollout_observations(observations)
-
         with torch.no_grad():
-            obs_tensor, _ = policy.obs_to_tensor(flattened_observations)
+            obs_tensor, _ = policy.obs_to_tensor(observations)
             distribution = policy.get_distribution(obs_tensor)
             entropy = distribution.distribution.entropy()
 
-            if entropy.dim() > 1:
-                entropy = entropy.view(-1)
+            if entropy.dim() == 0:
+                entropy = entropy.unsqueeze(0)
+            else:
+                entropy = entropy.reshape(-1)
 
             entropy_values = entropy.detach().cpu().numpy()
 
-        self._update_counter += 1
-        self._writer.writerow([
-            timesteps,
-            self._update_counter,
-            float(np.mean(entropy_values)),
-            float(np.std(entropy_values)),
-            float(np.min(entropy_values)),
-            float(np.max(entropy_values)),
-            int(entropy_values.size),
-        ])
+        for env_idx, entropy_value in enumerate(entropy_values):
+            self._writer.writerow([timesteps, env_idx, float(entropy_value)])
         self._file_handle.flush()
 
 
-class EntropyTrackingPPO(PPO):
-    def __init__(self, *args, entropy_csv_path: str, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._entropy_logger = EntropyCSVLogger(entropy_csv_path, verbose=self.verbose)
+class EntropyCSVCallback(BaseCallback):
+    def __init__(self, csv_path: str, verbose: int = 0):
+        super().__init__(verbose=verbose)
+        self._logger = EntropyCSVLogger(csv_path, verbose=verbose)
 
-    def learn(self, *args, **kwargs):
-        self._entropy_logger.open()
-        try:
-            return super().learn(*args, **kwargs)
-        finally:
-            self._entropy_logger.close()
+    def _on_training_start(self) -> None:
+        self._logger.open()
 
-    def train(self) -> None:
-        super().train()
-        if hasattr(self, "rollout_buffer"):
-            self._entropy_logger.log_update(self.num_timesteps, self.policy, self.rollout_buffer.observations)
+    def _on_step(self) -> bool:
+        obs = self.locals.get("new_obs")
+        if obs is None:
+            return True
+
+        self._logger.log_step(self.num_timesteps, self.model.policy, obs)
+        return True
+
+    def _on_training_end(self) -> None:
+        self._logger.close()
 
 
 def find_statistics_wrapper(env) -> FootsiesStatistics:
@@ -337,16 +312,11 @@ if __name__ == "__main__":
 
     env = DummyVecEnv(env_fns)
 
-    model = EntropyTrackingPPO(
-        "MultiInputPolicy",
-        env,
-        verbose=args.verbose,
-        tensorboard_log=args.tensorboard_log,
-        entropy_csv_path=args.entropy_csv_path,
-    )
+    model = PPO("MultiInputPolicy", env, verbose=args.verbose, tensorboard_log=args.tensorboard_log)
+    entropy_callback = EntropyCSVCallback(csv_path=args.entropy_csv_path, verbose=args.verbose)
 
     try:
-        model.learn(total_timesteps=args.timesteps)
+        model.learn(total_timesteps=args.timesteps, callback=entropy_callback)
     except KeyboardInterrupt:
         print("Training interrupted by user — saving model before exit...")
     finally:

@@ -53,6 +53,27 @@ def analyze_entropy_data(rows: list) -> dict:
     if not rows:
         return {"error": "No data rows found in CSV"}
 
+    if "entropy" in rows[0]:
+        try:
+            timesteps = [int(row["timesteps"]) for row in rows]
+            entropy_values = [float(row["entropy"]) for row in rows]
+        except (KeyError, TypeError, ValueError) as e:
+            return {"error": f"CSV format error: {e}"}
+
+        max_theoretical_entropy = math.log(16)
+        analysis = {
+            "num_updates": len(rows),
+            "timesteps_total": timesteps[-1],
+            "entropy_start": entropy_values[0],
+            "entropy_end": entropy_values[-1],
+            "entropy_change": entropy_values[0] - entropy_values[-1],
+            "entropy_change_percent": ((entropy_values[0] - entropy_values[-1]) / entropy_values[0] * 100) if entropy_values[0] > 0 else 0,
+            "entropy_std": sum((value - sum(entropy_values) / len(entropy_values)) ** 2 for value in entropy_values) / len(entropy_values),
+            "max_theoretical": max_theoretical_entropy,
+            "entropy_relative_to_max": entropy_values[-1] / max_theoretical_entropy,
+        }
+        return analysis
+
     required_columns = [
         "timesteps",
         "update_count",
