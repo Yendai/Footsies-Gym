@@ -1,10 +1,22 @@
-import os
 import argparse
+import csv
 import json
+import os
+import sys
+from pathlib import Path
 import gymnasium as gym
+import torch
 from stable_baselines3 import PPO
+from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.monitor import Monitor
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+PACKAGE_ROOT = REPO_ROOT / "footsies_gym"
+
+if str(PACKAGE_ROOT) not in sys.path:
+    sys.path.insert(0, str(PACKAGE_ROOT))
+
 from footsies_gym.envs.footsies import FootsiesEnv
 from footsies_gym.wrappers import FootsiesActionCombinationsDiscretized, FootsiesNormalized, FootsiesStatistics
 
@@ -31,6 +43,60 @@ def make_env(game_path, render_mode, sync_mode, fast_forward, fast_forward_speed
         return env
 
     return _init
+
+
+def resolve_repo_path(path_like: str) -> str:
+    path = Path(path_like)
+    return str(path if path.is_absolute() else (REPO_ROOT / path).resolve())
+
+
+class PolicyEntropyCSVCallback(BaseCallback):
+    """Logs policy entropy H(s) = -sum_a pi(a|s) log pi(a|s) to CSV at each training step."""
+
+    def __init__(self, csv_path: str, verbose: int = 0):
+        super().__init__(verbose=verbose)
+        self.csv_path = csv_path
+        self._file_handle = None
+        self._writer = None
+
+    def _on_training_start(self) -> None:
+        csv_dir = os.path.dirname(self.csv_path)
+        if csv_dir:
+            os.makedirs(csv_dir, exist_ok=True)
+
+        self._file_handle = open(self.csv_path, "w", newline="", encoding="utf-8")
+        self._writer = csv.writer(self._file_handle)
+        self._writer.writerow(["timesteps", "env_index", "entropy"])
+
+    def _on_step(self) -> bool:
+        if self._writer is None:
+            return True
+
+        obs = self.locals.get("new_obs")
+        if obs is None:
+            return True
+
+        with torch.no_grad():
+            obs_tensor, _ = self.model.policy.obs_to_tensor(obs)
+            distribution = self.model.policy.get_distribution(obs_tensor)
+            entropy = distribution.distribution.entropy()
+
+            if entropy.dim() > 1:
+                entropy = entropy.sum(dim=-1)
+
+            entropy_values = entropy.detach().cpu().numpy().tolist()
+
+        for env_idx, entropy_value in enumerate(entropy_values):
+            self._writer.writerow([self.num_timesteps, env_idx, float(entropy_value)])
+
+        self._file_handle.flush()
+        return True
+
+    def _on_training_end(self) -> None:
+        if self._file_handle is not None:
+            self._file_handle.close()
+            self._file_handle = None
+            self._writer = None
 
 
 def find_statistics_wrapper(env) -> FootsiesStatistics:
@@ -146,11 +212,18 @@ def parse_args():
     parser.add_argument("--tensorboard-log", default=None, help="Tensorboard log dir")
     parser.add_argument("--stats-text-path", default="Agents-Test/latest_training_stats.txt", help="Path to write the human-readable training statistics report")
     parser.add_argument("--stats-json-path", default="Agents-Test/latest_training_stats.json", help="Path to write the JSON training statistics report")
+    parser.add_argument("--entropy-csv-path", default="Agents-Test/policy_entropy.csv", help="Path to write per-timestep policy entropy CSV")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
+
+    args.game_path = resolve_repo_path(args.game_path)
+    args.save_path = resolve_repo_path(args.save_path)
+    args.stats_text_path = resolve_repo_path(args.stats_text_path)
+    args.stats_json_path = resolve_repo_path(args.stats_json_path)
+    args.entropy_csv_path = resolve_repo_path(args.entropy_csv_path)
 
     if not os.path.isfile(args.game_path):
         raise FileNotFoundError(f"Unity build not found at '{args.game_path}'. Build your game or provide --game-path.")
@@ -164,7 +237,7 @@ if __name__ == "__main__":
             sync_mode="synced_non_blocking",
             fast_forward=args.fast_forward,
             fast_forward_speed=args.fast_forward_speed,
-            log_file="out.log",
+            log_file=str((REPO_ROOT / "out.log").resolve()),
             frame_delay=0,
             skip_instancing=False,
         )
@@ -174,9 +247,10 @@ if __name__ == "__main__":
     env = DummyVecEnv(env_fns)
 
     model = PPO("MultiInputPolicy", env, verbose=args.verbose, tensorboard_log=args.tensorboard_log)
+    entropy_callback = PolicyEntropyCSVCallback(csv_path=args.entropy_csv_path)
 
     try:
-        model.learn(total_timesteps=args.timesteps)
+        model.learn(total_timesteps=args.timesteps, callback=entropy_callback)
     except KeyboardInterrupt:
         print("Training interrupted by user — saving model before exit...")
     finally:
